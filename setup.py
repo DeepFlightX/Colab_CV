@@ -6,8 +6,15 @@ from pathlib import Path
 # Get absolute path to the directory where this script is located
 script_dir = Path(__file__).resolve().parent
 
-print("Cloning repos...")
-subprocess.run(["git", "clone", "https://github.com/WongKinYiu/yolov7.git", "."], cwd=script_dir, check=True)
+yolov7_dir = script_dir / "yolov7"
+
+if not yolov7_dir.exists():
+    print(f"Cloning yolov7 into: {yolov7_dir}")
+    subprocess.run([
+        "git", "clone", "https://github.com/WongKinYiu/yolov7.git", str(yolov7_dir)
+    ], check=True)
+else:
+    print("yolov7 repo already exists, skipping clone.")
 
 # Build absolute path to requirements.txt
 requirements_path = script_dir / "requirements.txt"
