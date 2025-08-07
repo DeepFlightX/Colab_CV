@@ -6,7 +6,8 @@ print("Cloning repos...")
 os.system("git clone https://github.com/WongKinYiu/yolov7.git")
 
 print("Installing dependencies")
-os.system("pip install -r requirements.txt")
+subprocess.run(["pip", "install", "-r", "requirements.txt"], check=True)
+
 
 
 print("Checking for GPU...")
