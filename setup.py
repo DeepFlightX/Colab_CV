@@ -7,7 +7,7 @@ from pathlib import Path
 script_dir = Path(__file__).resolve().parent
 
 print("Cloning repos...")
-subprocess.run(["git", "clone", "https://github.com/WongKinYiu/yolov7.git"], check=True)
+subprocess.run(["git", "clone", "https://github.com/WongKinYiu/yolov7.git", "."], cwd=script_dir, check=True)
 
 # Build absolute path to requirements.txt
 requirements_path = script_dir / "requirements.txt"
