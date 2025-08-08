@@ -37,5 +37,6 @@ thop  # FLOPs computation
 # albumentations>=1.0.3
 pycocotools>=2.0  # COCO mAP
 roboflow
-tensorflow==2.14.1
-tensorboard==2.14.1
+tensorflow==2.13.0
+tensorboard==2.13.0
+jax==0.4.13
