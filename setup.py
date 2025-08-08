@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from pathlib import PurePosixPath
 
 # Get absolute path to the directory where this script is located
 script_dir = Path(__file__).resolve().parent
@@ -31,3 +32,34 @@ try:
 except ImportError:
     print("Installing torch...")
     subprocess.run(["pip", "install", "torch"], check=True)
+
+def parse_roboflow_url(url: str):
+    # Remove trailing slash
+    cleaned = url.rstrip('/')
+
+    # Remove everything before and including 'roboflow.com/'
+    if 'roboflow.com/' in cleaned:
+        post = cleaned.split('roboflow.com/', 1)[1]
+    else:
+        raise ValueError("URL does not contain 'roboflow.com/'")
+
+    # Break up the path into parts
+    path = PurePosixPath(post)
+    parts = path.parts
+
+    if len(parts) >= 2:
+        workspace, project = parts[0], parts[1]
+    else:
+        raise ValueError("URL does not contain both workspace and project names.")
+
+    return workspace, project
+
+
+user_url = input("Paste your Roboflow project URL: ").strip()
+
+try:
+    workspace, project = parse_roboflow_url(user_url)
+    print("Workspace:", workspace)
+    print("Project:", project)
+except ValueError as e:
+    print("Error:", e)
