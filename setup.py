@@ -49,11 +49,11 @@ def parse_roboflow_url(url: str):
     parts = path.parts
 
     if len(parts) >= 2:
-        workspace, project = parts[0], parts[1]
+        workspaco, projecto = parts[0], parts[1]
     else:
         raise ValueError("URL does not contain both workspace and project names.")
 
-    return workspace, project
+    return workspaco, projecto
 
 
 user_url = input("Paste your Roboflow project URL: ").strip()
@@ -61,15 +61,15 @@ api_key = input ("Input your api key from: ").strip()
 version = int (input ("Version, input the version number as an integer")) 
 
 try:
-    workspace, project = parse_roboflow_url(user_url)
-    print("Workspace:", workspace)
-    print("Project:", project)
+    workspaco, projecto = parse_roboflow_url(user_url)
+    print("Workspace:", workspaco)
+    print("Project:", projecto)
 except ValueError as e:
     print("Error:", e)
 
 from roboflow import Roboflow
 
 rf = Roboflow(api_key)
-project = rf.workspace(workspace).project(project)
-dataset = project.version(1).download("yolov5", location=str(yolov7_dir))
+proj = rf.workspace(workspaco).project(projecto)
+dataset = proj.version(1).download("yolov5", location=str(yolov7_dir))
 
