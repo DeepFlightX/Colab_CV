@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 from pathlib import PurePosixPath
-from roboflow import Roboflow
+
 
 # Get absolute path to the directory where this script is located
 script_dir = Path(__file__).resolve().parent
@@ -67,7 +67,7 @@ try:
 except ValueError as e:
     print("Error:", e)
 
-
+from roboflow import Roboflow
 
 rf = Roboflow(api_key)
 project = rf.workspace(workspace).project(project)
