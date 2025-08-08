@@ -69,6 +69,8 @@ except ValueError as e:
 
 from roboflow import Roboflow
 
+os.chdir(yolov7_dir)
+
 rf = Roboflow(api_key)
 proj = rf.workspace(workspaco).project(projecto)
 dataset = proj.version(1).download("yolov5")
