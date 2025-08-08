@@ -75,3 +75,21 @@ rf = Roboflow(api_key)
 proj = rf.workspace(workspaco).project(projecto)
 dataset = proj.version(1).download("yolov5")
 
+
+train_command = [
+    "python", "train.py",
+    "--img", "576", "320",
+    "--batch", "128",
+    "--epochs", "50",
+    "--data", "/content/Colab_CV/yolov7/Drone-1/data.yaml",
+    "--cfg", "cfg/training/yolov7-tiny.yaml",
+    "--weights", "yolov7-tiny.pt",
+    "--name", "yolov7-tiny-amb82",
+    "--workers", "8"
+]
+
+env = os.environ.copy()
+env["WANDB_MODE"] = "disabled"  # disables logging to Weights & Biases
+
+
+subprocess.run(train_command, env=env, cwd="/content/Colab_CV/yolov7", check=True, text=True)
