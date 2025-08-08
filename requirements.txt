@@ -40,3 +40,4 @@ roboflow
 tensorflow==2.13.0
 tensorboard==2.13.0
 jax==0.4.13
+jaxlib==0.4.13
