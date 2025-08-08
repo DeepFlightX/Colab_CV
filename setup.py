@@ -3,6 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 from pathlib import PurePosixPath
+from roboflow import Roboflow
 
 # Get absolute path to the directory where this script is located
 script_dir = Path(__file__).resolve().parent
@@ -56,6 +57,8 @@ def parse_roboflow_url(url: str):
 
 
 user_url = input("Paste your Roboflow project URL: ").strip()
+api_key = input ("Input your api key from: ").strip()
+version = int (input ("Version, input the version number as an integer")) 
 
 try:
     workspace, project = parse_roboflow_url(user_url)
@@ -63,3 +66,10 @@ try:
     print("Project:", project)
 except ValueError as e:
     print("Error:", e)
+
+
+
+rf = Roboflow(api_key)
+project = rf.workspace(workspace).project(project)
+dataset = project.version(1).download("yolov5", location=str(yolov7_dir))
+
