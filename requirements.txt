@@ -1,33 +1,26 @@
-# Base (pin to stable, Python 3.11 friendly)
-matplotlib==3.8.4
+# Core compatibility (plays nice with TF 2.14.x and JAX 0.4.27)
 numpy==1.26.4
-opencv-python==4.9.0.80
-Pillow==10.4.0
-PyYAML==6.0.2
-requests==2.32.3
+typing-extensions==4.12.2
+protobuf==4.25.3
 scipy==1.11.4
-tqdm==4.66.4
 pandas==2.2.2
-seaborn==0.13.2
+tqdm==4.66.4
+requests==2.32.3
+PyYAML==6.0.2
+Pillow==10.4.0
+opencv-python==4.9.0.80
 ipython
 psutil
 thop
 pycocotools>=2.0
 
-# PyTorch + TorchVision (CUDA 12.1 for L4)
-torch==2.1.2
-torchvision==0.16.2
+# TensorFlow (CPU is fine; you mainly want TensorBoard)
+tensorflow==2.14.1
+tensorboard==2.14.1
 
-# TensorFlow (<= 2.14.1) + TensorBoard + protobuf that works with both TF & YOLO
-tensorflow==2.13.1
-tensorboard==2.13.0
-protobuf==4.21.1
+# JAX (disable plugin discovery in code below)
+jax==0.4.27
+jaxlib==0.4.27
 
-# JAX on CUDA 12 (no jax_plugins)
-jax==0.4.13
-jaxlib==0.4.13
-
-# Roboflow and the HF stack pinned to avoid 'torch.uint64' issues
+# Roboflow SDK
 roboflow==1.1.28
-transformers==4.39.3
-safetensors==0.4.3
