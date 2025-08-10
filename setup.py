@@ -3,6 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 from pathlib import PurePosixPath
+from scripts.dir import list_dir, find_extra_item
 
 
 # Get absolute path to the directory where this script is located
@@ -71,17 +72,24 @@ from roboflow import Roboflow
 
 os.chdir(yolov7_dir)
 
+items = list_dir(yolov7_dir)
+
 rf = Roboflow(api_key)
 proj = rf.workspace(workspaco).project(projecto)
 dataset = proj.version(version).download("yolov5")
 
+new_items = list_dir(yolov7_dir)
+
+project_name = find_extra_item(items, new_items)
 # width = int (input("Set image width for "))
+data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
+
 train_command = [
     "python", "train.py",
     "--img", "576", "320",
     "--batch", "128",
     "--epochs", "50",
-    "--data", "/content/Colab_CV/yolov7/Drone-1/data.yaml",
+    "--data", data_path,
     "--cfg", "cfg/training/yolov7-tiny.yaml",
     "--weights", "yolov7-tiny.pt",
     "--name", "yolov7-tiny-amb82",
