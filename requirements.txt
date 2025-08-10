@@ -1,43 +1,33 @@
-# Usage: pip install -r requirements.txt
+# Base (pin to stable, Python 3.11 friendly)
+matplotlib==3.8.4
+numpy==1.26.4
+opencv-python==4.9.0.80
+Pillow==10.4.0
+PyYAML==6.0.2
+requests==2.32.3
+scipy==1.11.4
+tqdm==4.66.4
+pandas==2.2.2
+seaborn==0.13.2
+ipython
+psutil
+thop
+pycocotools>=2.0
 
-# Base ----------------------------------------
-matplotlib>=3.2.2
-numpy==1.24.3
-opencv-python>=4.1.1
-Pillow>=7.1.2
-PyYAML>=5.3.1
-requests>=2.23.0
-scipy>=1.4.1
-torch>=1.7.0,!=1.12.0
-torchvision>=0.8.1,!=0.13.0
-tqdm>=4.41.0
-protobuf<4.21.3
+# PyTorch + TorchVision (CUDA 12.1 for L4)
+torch==2.1.2
+torchvision==0.16.2
 
-# Logging -------------------------------------
-#tensorboard>=2.4.1
-# wandb
-
-# Plotting ------------------------------------
-pandas>=1.1.4
-seaborn>=0.11.0
-
-# Export --------------------------------------
-# coremltools>=4.1  # CoreML export
-# onnx>=1.9.0  # ONNX export
-# onnx-simplifier>=0.3.6  # ONNX simplifier
-# scikit-learn==0.19.2  # CoreML quantization
-# tensorflow>=2.4.1  # TFLite export
-# tensorflowjs>=3.9.0  # TF.js export
-# openvino-dev  # OpenVINO export
-
-# Extras --------------------------------------
-ipython  # interactive notebook
-psutil  # system utilization
-thop  # FLOPs computation
-# albumentations>=1.0.3
-pycocotools>=2.0  # COCO mAP
-roboflow
-tensorflow==2.13.0
+# TensorFlow (<= 2.14.1) + TensorBoard + protobuf that works with both TF & YOLO
+tensorflow==2.13.1
 tensorboard==2.13.0
+protobuf==4.21.1
+
+# JAX on CUDA 12 (no jax_plugins)
 jax==0.4.13
 jaxlib==0.4.13
+
+# Roboflow and the HF stack pinned to avoid 'torch.uint64' issues
+roboflow==1.1.28
+transformers==4.39.3
+safetensors==0.4.3

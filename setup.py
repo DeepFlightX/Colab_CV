@@ -73,9 +73,9 @@ os.chdir(yolov7_dir)
 
 rf = Roboflow(api_key)
 proj = rf.workspace(workspaco).project(projecto)
-dataset = proj.version(1).download("yolov5")
+dataset = proj.version(version).download("yolov5")
 
-
+# width = int (input("Set image width for "))
 train_command = [
     "python", "train.py",
     "--img", "576", "320",
