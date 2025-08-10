@@ -81,9 +81,16 @@ dataset = proj.version(version).download("yolov5")
 new_items = list_dir(yolov7_dir)
 
 project_name = find_extra_item(items, new_items)
-# width = int (input("Set image width for "))
+
+width = int (input("Set image width for CV input"))
+
 data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
+subprocess.run([
+    "sed", "-i",
+    "s/torch.load(weights, map_location=device)/torch.load(weights, map_location=device, weights_only=False)/",
+    "/content/Colab_CV/yolov7/train.py"
+], check=True)
 train_command = [
     "python", "train.py",
     "--img", "576", "320",
