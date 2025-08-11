@@ -115,3 +115,4 @@ env["WANDB_MODE"] = "disabled"  # disables logging to Weights & Biases
 
 
 subprocess.run(train_command, env=env, cwd="/content/Colab_CV/yolov7", check=True, text=True)
+

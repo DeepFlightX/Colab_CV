@@ -11,8 +11,9 @@ Pillow==10.4.0
 opencv-python==4.9.0.80
 ipython
 psutil
-thop
+#thop
 pycocotools>=2.0
+matplotlib==3.8.4
 
 # TensorFlow (CPU is fine; you mainly want TensorBoard)
 tensorflow==2.14.1
