@@ -33,7 +33,7 @@ else:
 requirements_path = script_dir / "requirements.txt"
 
 print(f"Installing dependencies from: {requirements_path}")
-subprocess.run(["pip", "install", "-r", str(requirements_path)], check=True)
+subprocess.run([sys.executable, "-m", "pip", "install", "--no-cache-dir", "-r", str(requirements_path)], check=True)
 
 copy_folder_if_exists (yolov7_dir, "models" , script_dir / "scripts")
 copy_folder_if_exists (yolov7_dir, "utils" , script_dir / "scripts")
@@ -85,12 +85,11 @@ new_items = list_dir(yolov7_dir)
 
 project_name = find_extra_item(items, new_items)
 
-width = int (input("Set image width for CV input")).strip()
+width = int (input("Set image width for CV input"))
 
-epochs = int (input ("Choose number of inputs")).strip()
+epochs = int (input ("Choose number of inputs"))
 
-batch = int (input ("Choose number images per batch")).strip()
-
+batch = int (input ("Choose number images per batch"))
 data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
 subprocess.run([
@@ -100,9 +99,9 @@ subprocess.run([
 ], check=True)
 train_command = [
     "python", "train.py",
-    "--img", width, "320",
-    "--batch", batch,
-    "--epochs", epochs,
+    "--img", str(width), "320",
+    "--batch", str(batch),
+    "--epochs", str(epochs),
     "--data", data_path,
     "--cfg", "cfg/training/yolov7-tiny.yaml",
     "--weights", "yolov7-tiny.pt",
