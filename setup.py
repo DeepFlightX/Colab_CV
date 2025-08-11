@@ -36,6 +36,8 @@ print(f"Installing dependencies from: {requirements_path}")
 subprocess.run(["pip", "install", "-r", str(requirements_path)], check=True)
 
 copy_folder_if_exists (yolov7_dir, "models" , script_dir / "scripts")
+copy_folder_if_exists (yolov7_dir, "utils" , script_dir / "scripts")
+
 def parse_roboflow_url(url: str):
     # Remove trailing slash
     cleaned = url.rstrip('/')
@@ -83,7 +85,11 @@ new_items = list_dir(yolov7_dir)
 
 project_name = find_extra_item(items, new_items)
 
-width = int (input("Set image width for CV input"))
+width = int (input("Set image width for CV input")).strip()
+
+epochs = int (input ("Choose number of inputs")).strip()
+
+batch = int (input ("Choose number images per batch")).strip()
 
 data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
@@ -94,9 +100,9 @@ subprocess.run([
 ], check=True)
 train_command = [
     "python", "train.py",
-    "--img", "576", "320",
-    "--batch", "128",
-    "--epochs", "50",
+    "--img", width, "320",
+    "--batch", batch,
+    "--epochs", epochs,
     "--data", data_path,
     "--cfg", "cfg/training/yolov7-tiny.yaml",
     "--weights", "yolov7-tiny.pt",
