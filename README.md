@@ -11,3 +11,7 @@ Just run:
 
 Inside of a colab code cell
 Follow the instructions
+
+## To get a Roboflow API
+
+Get a Roboflow account > go to account settings > click on API Keys > Use the Private API Key
