@@ -12,7 +12,16 @@ script_dir = Path(__file__).resolve().parent
 
 yolov7_dir = script_dir / "yolov7"
 
+print(f"Installing frontend Libraries")
+subprocess.run([sys.executable, "-m", "pip", "install", "--no-cache-dir", "gradio"], check=True)
 
+import gradio as gr # Frontend
+
+def url(url_roboflow):
+    return url_roboflow
+
+demo = gr.Interface(fn=url, inputs="text")
+demo.launch()
 if not yolov7_dir.exists():
     print(f"Cloning yolov7 into: {yolov7_dir}")
     subprocess.run([
@@ -36,7 +45,7 @@ try:
 except ImportError:
     print("Installing torch...")
     subprocess.run(["pip", "install", "torch"], check=True)
-    
+
 copy_folder_if_exists (yolov7_dir, "models" , script_dir / "scripts")
 copy_folder_if_exists (yolov7_dir, "utils" , script_dir / "scripts")
 
@@ -89,7 +98,7 @@ project_name = find_extra_item(items, new_items)
 
 width = int (input("Set image width for CV input"))
 
-epochs = int (input ("Choose number of inputs"))
+epochs = int (input ("Choose number of epochs"))
 
 batch = int (input ("Choose number images per batch"))
 data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
