@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 from pathlib import PurePosixPath
 from scripts.dir import list_dir, find_extra_item, copy_folder_if_exists
-
+from google.colab import output
 
 
 # Get absolute path to the directory where this script is located
@@ -26,7 +26,16 @@ with gr.Blocks() as demo:
     output = gr.Textbox(label="Debug Console")
     greet_btn.click(fn=url, inputs=url_roboflow, outputs=output, api_name="greet")
 
-demo.launch(inline=True)  
+PORT = 7860
+demo.launch(
+    server_name="0.0.0.0",
+    server_port=PORT,
+    share=False,
+    prevent_thread_lock=True,   # don't block so we can run the next line
+)
+
+# Pop the UI right inside the cell as an iframe:
+output.serve_kernel_port_as_iframe(PORT, height=600)
 
 if not yolov7_dir.exists():
     print(f"Cloning yolov7 into: {yolov7_dir}")
