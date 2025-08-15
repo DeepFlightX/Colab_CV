@@ -26,8 +26,7 @@ with gr.Blocks() as demo:
     output = gr.Textbox(label="Debug Console")
     greet_btn.click(fn=url, inputs=url_roboflow, outputs=output, api_name="greet")
 
-demo.launch()
-
+demo.launch(inline=True)  
 
 if not yolov7_dir.exists():
     print(f"Cloning yolov7 into: {yolov7_dir}")
