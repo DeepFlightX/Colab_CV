@@ -20,8 +20,15 @@ import gradio as gr # Frontend
 def url(url_roboflow):
     return url_roboflow
 
-demo = gr.Interface(fn=url, inputs="text")
+with gr.Blocks() as demo:
+    url_roboflow = gr.Textbox(label="Enter the Roboflow Project URL")
+    greet_btn = gr.Button("Greet")
+    output = gr.Textbox(label="Debug Console")
+    greet_btn.click(fn=url, inputs=url_roboflow, outputs=output, api_name="greet")
+
 demo.launch()
+
+
 if not yolov7_dir.exists():
     print(f"Cloning yolov7 into: {yolov7_dir}")
     subprocess.run([
