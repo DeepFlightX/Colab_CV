@@ -23,8 +23,8 @@ def url(url_roboflow):
 with gr.Blocks() as demo:
     url_roboflow = gr.Textbox(label="Enter the Roboflow Project URL")
     greet_btn = gr.Button("Greet")
-    output = gr.Textbox(label="Debug Console")
-    greet_btn.click(fn=url, inputs=url_roboflow, outputs=output, api_name="greet")
+    debug_console = gr.Textbox(label="Debug Console")
+    greet_btn.click(fn=url, inputs=url_roboflow, outputs=debug_console, api_name="greet")
 
 PORT = 7860
 demo.launch(
