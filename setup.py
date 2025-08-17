@@ -12,8 +12,9 @@ script_dir = Path(__file__).resolve().parent
 yolov7_dir = script_dir / "yolov7"
 gr_requirements_path = script_dir / "gr_req.txt"
 
+
 print(f"Installing dependencies from: {gr_requirements_path}")
-subprocess.run([sys.executable, "-m", "pip", "install", "--no-cache-dir", "-r", str(gr_requirements_path)], check=True)
+subprocess.run([sys.executable, "-m", "pip", "install", "--no-cache-dir", "Pillow==10.4.0", "--force-reinstall"], check=True)
 
 import gradio as gr
 
