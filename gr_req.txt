@@ -1,0 +1,16 @@
+# Core libraries
+numpy==1.26.4
+typing-extensions==4.12.2
+protobuf==4.25.3
+pandas==2.2.2
+requests==2.32.3
+PyYAML==6.0.2
+Pillow==10.4.0
+matplotlib==3.8.4
+ipython
+psutil
+tqdm==4.66.4
+scipy==1.11.4
+
+# Gradio frontend
+gradio==4.44.0

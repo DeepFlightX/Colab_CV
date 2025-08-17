@@ -14,12 +14,6 @@ yolov7_dir = script_dir / "yolov7"
 
 def install_deps(): 
 
-
-    print(f"Installing frontend Libraries")
-    subprocess.run([sys.executable, "-m", "pip", "install", "--no-cache-dir", "gradio"], check=True)
-
-
-
     if not yolov7_dir.exists():
         print(f"Cloning yolov7 into: {yolov7_dir}")
         subprocess.run([
@@ -102,6 +96,11 @@ def train_model(width, epochs, batch, project_name):
         "sed", "-i",
         "s/torch.load(weights, map_location=device)/torch.load(weights, map_location=device, weights_only=False)/",
         "/content/Colab_CV/yolov7/train.py"
+    ], check=True)
+    subprocess.run([
+        "sed", "-i",
+        "s/torch.load(weights, map_location=device)/torch.load(weights, map_location=device, weights_only=False)/",
+        "/content/Colab_CV/yolov7/utils/general.py"
     ], check=True)
     train_command = [
         "python", "train.py",
