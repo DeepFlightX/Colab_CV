@@ -12,7 +12,7 @@ yolov7_dir = script_dir / "yolov7"
 
 # Get absolute path to the directory where this script is located
 
-def install_deps(yolov7_dir, script_dir): 
+def install_deps(): 
 
 
     print(f"Installing frontend Libraries")
