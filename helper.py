@@ -83,16 +83,19 @@ def pull_dataset(user_url, api_key, version):
     os.chdir(yolov7_dir)
 
 
-
+    items = list_dir(yolov7_dir)
     rf = Roboflow(api_key)
     proj = rf.workspace(workspaco).project(projecto)
     dataset = proj.version(version).download("yolov5")
 
-def train_model(width, epochs, batch):
-   
     new_items = list_dir(yolov7_dir)
-    items = list_dir(yolov7_dir)
+    
     project_name = find_extra_item(items, new_items)
+    return project_name
+
+def train_model(width, epochs, batch, project_name):
+   
+    
     data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
     subprocess.run([
