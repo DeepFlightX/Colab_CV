@@ -7,4 +7,8 @@ from scripts.dir import list_dir, find_extra_item, copy_folder_if_exists
 sys.path.append("/content/Colab_CV")
 from helper import install_deps
 
+script_dir = Path(__file__).resolve().parent
+
+yolov7_dir = script_dir / "yolov7"
+
 install_deps()
