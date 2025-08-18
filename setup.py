@@ -1,5 +1,6 @@
 import os, sys, subprocess
 from pathlib import Path
+
 sys.path.append("/content/Colab_CV")
 
 # --- robust script_dir (works in .py and in a notebook cell) ---
@@ -11,15 +12,14 @@ except NameError:
 yolov7_dir = script_dir / "yolov7"
 gr_requirements_path = script_dir / "gr_req.txt"
 
-# --- install all frontend deps, and pin transitive ones via a constraint ---
-# (prevents Pillow from being silently upgraded by sub-dependencies)
+# --- install all frontend deps ---
 subprocess.run(
     [sys.executable, "-m", "pip", "install", "--no-cache-dir",
      "-r", str(gr_requirements_path), "--constraint", str(gr_requirements_path)],
     check=True
 )
 
-# --- ensure Pillow exactly matches runtime (prevents _imaging mismatch); re-exec once if needed ---
+# --- ensure Pillow version matches runtime ---
 def ensure_pillow(target="10.4.0"):
     try:
         from importlib.metadata import version
@@ -36,9 +36,8 @@ def ensure_pillow(target="10.4.0"):
 ensure_pillow("10.4.0")
 
 import gradio as gr
-from google.colab import output as colab_output  # IMPORTANT: only works from the notebook kernel
 
-# ---- pipeline (uses your helper.py) ----
+# ---- pipeline ----
 def run_pipeline(user_url, api_key, version, width, epochs, batch):
     try:
         from helper import install_deps, pull_dataset, train_model
@@ -64,7 +63,6 @@ with gr.Blocks() as demo:
     output_box = gr.Textbox(label="Logs / Status", lines=10)
     run_btn.click(run_pipeline, [user_url, api_key, version, width, epochs, batch], output_box)
 
-# ---- launch + auto-open ----
+# ---- launch only (no Colab display calls here) ----
 PORT = 7860
 demo.launch(server_name="0.0.0.0", server_port=PORT, share=False, prevent_thread_lock=True)
-colab_output.serve_kernel_port_as_iframe(PORT, height=650)
