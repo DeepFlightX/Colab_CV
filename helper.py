@@ -99,9 +99,9 @@ def train_model(width, epochs, batch, project_name):
     ], check=True)
     subprocess.run([
         "sed", "-i",
-        "s/torch.load(weights, map_location=device)/torch.load(weights, map_location=device, weights_only=False)/",
+        "s/torch.load(/torch.load(weights_only=False, /g",
         "/content/Colab_CV/yolov7/utils/general.py"
-    ], check=True)
+], check=True)
     train_command = [
         "python", "train.py",
         "--img", str(width), "320",
