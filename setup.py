@@ -64,5 +64,5 @@ with gr.Blocks() as demo:
     run_btn.click(run_pipeline, [user_url, api_key, version, width, epochs, batch], output_box)
 
 # ---- launch only (no Colab display calls here) ----
-PORT = 7860
-demo.launch(server_name="0.0.0.0", server_port=PORT, share=False, prevent_thread_lock=True)
+demo.launch(share=True)
+
