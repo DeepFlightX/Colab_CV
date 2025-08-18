@@ -67,4 +67,4 @@ with gr.Blocks() as demo:
 # ---- launch + auto-open ----
 PORT = 7860
 demo.launch(server_name="0.0.0.0", server_port=PORT, share=False, prevent_thread_lock=True)
-colab_output.serve_kernel_port_as_window(PORT)   # or: colab_output.serve_kernel_port_as_iframe(PORT, height=650)
+colab_output.serve_kernel_port_as_iframe(PORT, height=650)
