@@ -92,16 +92,14 @@ def train_model(width, epochs, batch, project_name):
     
     data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
-    subprocess.run([
-        "sed", "-i",
-        "s/torch.load(weights, map_location=device)/torch.load(weights, map_location=device, weights_only=False)/",
-        "/content/Colab_CV/yolov7/train.py"
-    ], check=True)
-    subprocess.run([
-        "sed", "-i",
-        "s/torch.load(\\([^)]*\\))/torch.load(\\1, weights_only=False)/g",
-        "/content/Colab_CV/yolov7/utils/general.py"
-    ], check=True)
+    import fileinput, re
+
+    for file in ["/content/Colab_CV/yolov7/train.py",
+                 "/content/Colab_CV/yolov7/utils/general.py"]:
+        for line in fileinput.input(file, inplace=True):
+            if "torch.load(" in line and "weights_only" not in line:
+                line = re.sub(r"torch\.load\((.*)\)", r"torch.load(\1, weights_only=False)", line)
+            print(line, end="")
 
     
     train_command = [
