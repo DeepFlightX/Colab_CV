@@ -89,18 +89,18 @@ def pull_dataset(user_url, api_key, version):
 
 def train_model(width, epochs, batch, project_name):
    
-    
-    data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
+    import fileinput, re, os, subprocess
 
-    import fileinput, re
-
+    # Safe patcher: only modify torch.load calls
     for file in ["/content/Colab_CV/yolov7/train.py",
                  "/content/Colab_CV/yolov7/utils/general.py"]:
         for line in fileinput.input(file, inplace=True):
             if "torch.load(" in line and "weights_only" not in line:
-                line = re.sub(r"torch\.load\((.*)\)", r"torch.load(\1, weights_only=False)", line)
+                line = re.sub(r"torch\.load\(([^)]*)\)", r"torch.load(\1, weights_only=False)", line)
             print(line, end="")
+    data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
+    
     
     train_command = [
         "python", "train.py",
