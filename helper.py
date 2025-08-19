@@ -223,5 +223,5 @@ def train_model(width, epochs, batch, project_name):
     subprocess.run(train_command, env=env, cwd="/content/Colab_CV/yolov7", check=True, text=True)
 
 def download_model():
-    model_file = f"{yolov7_dir}/runs/train/yolov7-tiny-amb82/weights/best.pt"
-    files.download(model_file)
+    model_file = yolov7_dir / "runs" / "train" / "yolov7-tiny-amb82" / "weights" / "best.pt"
+    return str(model_file) if model_file.exists() else None

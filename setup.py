@@ -45,7 +45,7 @@ def run_pipeline(user_url, api_key, version, width, epochs, batch):
         patch_yolov7_weights_only("/content/Colab_CV/yolov7")
         project_name = pull_dataset(user_url, api_key, int(version))
         train_model(int(width), int(epochs), int(batch), project_name)
-        download_model()
+        model_path = download_model()
         return f" Training finished for project {project_name}!"
         
     except Exception as e:
@@ -54,7 +54,7 @@ def run_pipeline(user_url, api_key, version, width, epochs, batch):
 
 # ---- Gradio UI ----
 with gr.Blocks() as demo:
-    gr.Markdown("#  YOLOv7 Training Frontend (Colab Auto-Launch)")
+    gr.Markdown("# YOLOv7 Training Frontend (Colab)")
     with gr.Row():
         user_url = gr.Textbox(label="Roboflow Project URL")
         api_key  = gr.Textbox(label="API Key", type="password")
@@ -63,9 +63,13 @@ with gr.Blocks() as demo:
         width  = gr.Number(label="Image Width", value=416, precision=0)
         epochs = gr.Number(label="Epochs", value=10, precision=0)
         batch  = gr.Number(label="Batch Size", value=16, precision=0)
-    run_btn    = gr.Button(" Start Training")
+
+    run_btn    = gr.Button("Start Training")
     output_box = gr.Textbox(label="Logs / Status", lines=10)
-    run_btn.click(run_pipeline, [user_url, api_key, version, width, epochs, batch], output_box)
+    best_file  = gr.File(label="best.pt")  
+
+    # return (status_text, model_path)
+    run_btn.click(run_pipeline, [user_url, api_key, version, width, epochs, batch], [output_box, best_file])
 
 # ---- launch only (no Colab display calls here) ----
 demo.launch(share=True)
