@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 from pathlib import PurePosixPath
 from scripts.dir import list_dir, find_extra_item, copy_folder_if_exists
+from google.colab import files
 
 script_dir = Path(__file__).resolve().parent
 
@@ -120,3 +121,6 @@ def train_model(width, epochs, batch, project_name):
 
     subprocess.run(train_command, env=env, cwd="/content/Colab_CV/yolov7", check=True, text=True)
 
+def download_model():
+    model_file = f"{yolov7_dir}/runs/train/yolov7-tiny-amb82/weights/best.pt"
+    files.download(model_file)
