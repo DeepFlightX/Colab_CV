@@ -53,24 +53,54 @@ def run_pipeline(user_url, api_key, version, width, epochs, batch):
         
 
 # ---- Gradio UI ----
+def prepare_download(path):
+    """Prepare a DownloadButton with the file path (no Colab files.download here)."""
+    if path and os.path.exists(path):
+        # set button's 'value' to the filepath and show it
+        return gr.update(value=path, visible=True), "Ready"
+    return gr.update(visible=False, value=None), "No model found yet"
+
 with gr.Blocks() as demo:
     gr.Markdown("# YOLOv7 Training Frontend (Colab)")
+
     with gr.Row():
         user_url = gr.Textbox(label="Roboflow Project URL")
         api_key  = gr.Textbox(label="API Key", type="password")
         version  = gr.Number(label="Dataset Version", value=1, precision=0)
+
     with gr.Row():
         width  = gr.Number(label="Image Width", value=416, precision=0)
         epochs = gr.Number(label="Epochs", value=10, precision=0)
         batch  = gr.Number(label="Batch Size", value=16, precision=0)
 
-    run_btn    = gr.Button("Start Training")
-    output_box = gr.Textbox(label="Logs / Status", lines=10)
-    best_file  = gr.File(label="best.pt")  
+    run_btn     = gr.Button("Start Training")
+    output_box  = gr.Textbox(label="Logs / Status", lines=10)
 
-    # return (status_text, model_path)
-    run_btn.click(run_pipeline, [user_url, api_key, version, width, epochs, batch], [output_box, best_file])
+    # Keep the model path in state (not visible)
+    model_path_state = gr.State(value=None)
 
-# ---- launch only (no Colab display calls here) ----
-demo.launch(share=True)
+    # New: button that “activates” the download control
+    make_dl_btn  = gr.Button("Make Download Button")
+    # New: Download button that actually serves best.pt when clicked
+    download_btn = gr.DownloadButton(label="Download best.pt", visible=False)
+
+    # Training returns (status_text, model_path_str)
+    run_btn.click(
+        run_pipeline,
+        inputs=[user_url, api_key, version, width, epochs, batch],
+        outputs=[output_box, model_path_state],
+    )
+
+    # User clicks to prepare the download button after training
+    # We also echo a small status next to it in a textbox
+    dl_status = gr.Textbox(label="Download Status", interactive=False)
+
+    make_dl_btn.click(
+        prepare_download,
+        inputs=[model_path_state],
+        outputs=[download_btn, dl_status],
+    )
+
+# Important: disable the API docs route that triggers the schema bug
+demo.launch(share=True, show_api=False)
 
