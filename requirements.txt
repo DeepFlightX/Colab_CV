@@ -1,19 +1,10 @@
 # Core compatibility (plays nice with TF 2.14.x and JAX 0.4.27)
-numpy==1.26.4
-typing-extensions==4.12.2
-protobuf==4.25.3
 scipy==1.11.4
-pandas==2.2.2
-tqdm==4.66.4
-requests==2.32.3
-PyYAML==6.0.2
-Pillow==10.4.0
 opencv-python==4.9.0.80
-ipython
-psutil
+
 #thop
 pycocotools>=2.0
-matplotlib==3.8.4
+
 
 # TensorFlow (CPU is fine; you mainly want TensorBoard)
 tensorflow==2.14.1

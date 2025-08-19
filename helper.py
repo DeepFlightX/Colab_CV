@@ -90,15 +90,39 @@ def pull_dataset(user_url, api_key, version):
 
 def train_model(width, epochs, batch, project_name):
    
-    import fileinput, re, os, subprocess
 
-    # Safe patcher: only modify torch.load calls
-    for file in ["/content/Colab_CV/yolov7/train.py",
-                 "/content/Colab_CV/yolov7/utils/general.py"]:
-        for line in fileinput.input(file, inplace=True):
-            if "torch.load(" in line and "weights_only" not in line:
-                line = re.sub(r"torch\.load\(([^)]*)\)", r"torch.load(\1, weights_only=False)", line)
-            print(line, end="")
+    import subprocess
+
+    def patch_yolov7_torch_loads():
+        cmds = [
+            # train.py: add weights_only=False to both occurrences
+            [
+                "sed", "-i",
+                r"s/torch\.load(weights, map_location=device)/torch.load(weights, map_location=device, weights_only=False)/g",
+                "/content/Colab_CV/yolov7/train.py",
+            ],
+
+            # utils/general.py: add weights_only=False after the cpu map_location
+            [
+                "sed", "-i",
+                r"s/torch\.load(f, map_location=torch\.device\('cpu'\))/torch.load(f, map_location=torch.device('cpu'), weights_only=False)/g",
+                "/content/Colab_CV/yolov7/utils/general.py",
+            ],
+
+            # (Optional) clean up any prior bad patches that shoved weights_only into torch.device(...)
+            [
+                "sed", "-i",
+                r"s/torch\.device\('cpu', weights_only=False\)/torch.device('cpu')/g",
+                "/content/Colab_CV/yolov7/utils/general.py",
+            ],
+        ]
+
+        for cmd in cmds:
+            subprocess.run(cmd, check=True)
+
+    # call before launching training
+    patch_yolov7_torch_loads()
+
     data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
     
