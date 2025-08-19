@@ -87,42 +87,119 @@ def pull_dataset(user_url, api_key, version):
     
     project_name = find_extra_item(items, new_items)
     return project_name
+def patch_yolov7_weights_only(yolov7_dir, make_backups=True, verbose=True):
+    """
+    Patch all torch.load(...) calls in YOLOv7 to include weights_only=False,
+    and fix any accidental 'torch.device(\"cpu\", weights_only=False)' inserts.
+
+    Args:
+        yolov7_dir (str | pathlib.Path): Path to the YOLOv7 repository folder.
+        make_backups (bool): If True, writes a .py.bak backup next to each modified file.
+        verbose (bool): If True, prints per-file and summary info.
+
+    Returns:
+        (files_patched:int, calls_patched:int)
+    """
+    from pathlib import Path
+
+    yolov7_dir = Path(yolov7_dir)
+    if not yolov7_dir.is_dir():
+        raise FileNotFoundError(f"yolov7_dir not found: {yolov7_dir}")
+
+    def _fix_text(src):
+        # Clean up bad prior patch: torch.device('cpu', weights_only=False) -> torch.device('cpu')
+        cleaned = src.replace("torch.device('cpu', weights_only=False)", "torch.device('cpu')")
+        cleaned = cleaned.replace('torch.device("cpu", weights_only=False)', 'torch.device("cpu")')
+
+        needle = "torch.load("
+        L = len(needle)
+        i = 0
+        n = len(cleaned)
+        out_parts = []
+        changed_calls = 0
+
+        while True:
+            j = cleaned.find(needle, i)
+            if j == -1:
+                out_parts.append(cleaned[i:])
+                break
+
+            # Copy up to "torch.load("
+            out_parts.append(cleaned[i:j])
+            out_parts.append(needle)
+
+            # Find matching ')', handling nested parens and strings
+            k = j + L
+            depth = 1
+            in_str = False
+            quote = ""
+            escape = False
+
+            while k < n and depth > 0:
+                ch = cleaned[k]
+                if in_str:
+                    if escape:
+                        escape = False
+                    elif ch == "\\":
+                        escape = True
+                    elif ch == quote:
+                        in_str = False
+                else:
+                    if ch in ("'", '"'):
+                        in_str = True
+                        quote = ch
+                    elif ch == "(":
+                        depth += 1
+                    elif ch == ")":
+                        depth -= 1
+                k += 1
+
+            args = cleaned[j + L : k - 1]  # inside the parentheses
+
+            # Add weights_only=False if missing
+            if "weights_only" not in args:
+                if args.strip():
+                    args = args.rstrip() + ", weights_only=False"
+                else:
+                    args = "weights_only=False"
+                changed_calls += 1
+
+            out_parts.append(args)
+            out_parts.append(")")
+            i = k
+
+        new_text = "".join(out_parts)
+        return new_text, changed_calls
+
+    files_patched = 0
+    calls_patched = 0
+
+    for path in yolov7_dir.rglob("*.py"):
+        original = path.read_text(encoding="utf-8")
+        fixed, calls = _fix_text(original)
+        if fixed != original:
+            if make_backups:
+                backup = path.with_suffix(path.suffix + ".bak")
+                backup.write_text(original, encoding="utf-8")
+            path.write_text(fixed, encoding="utf-8")
+            files_patched += 1
+            calls_patched += calls
+            if verbose:
+                rel = path.relative_to(yolov7_dir)
+                print(f"Patched {rel}  (+{calls} torch.load call(s))")
+
+    if verbose:
+        if files_patched == 0:
+            print("No changes made (already patched or patterns not found).")
+        else:
+            print(f"Done. Files patched: {files_patched}, torch.load calls updated: {calls_patched}")
+            if make_backups:
+                print("Backups saved as *.py.bak next to each modified file.")
+
+    return files_patched, calls_patched
 
 def train_model(width, epochs, batch, project_name):
    
-
-    import subprocess
-
-    def patch_yolov7_torch_loads():
-        cmds = [
-            # train.py: add weights_only=False to both occurrences
-            [
-                "sed", "-i",
-                r"s/torch\.load(weights, map_location=device)/torch.load(weights, map_location=device, weights_only=False)/g",
-                "/content/Colab_CV/yolov7/train.py",
-            ],
-
-            # utils/general.py: add weights_only=False after the cpu map_location
-            [
-                "sed", "-i",
-                r"s/torch\.load(f, map_location=torch\.device\('cpu'\))/torch.load(f, map_location=torch.device('cpu'), weights_only=False)/g",
-                "/content/Colab_CV/yolov7/utils/general.py",
-            ],
-
-            # (Optional) clean up any prior bad patches that shoved weights_only into torch.device(...)
-            [
-                "sed", "-i",
-                r"s/torch\.device\('cpu', weights_only=False\)/torch.device('cpu')/g",
-                "/content/Colab_CV/yolov7/utils/general.py",
-            ],
-        ]
-
-        for cmd in cmds:
-            subprocess.run(cmd, check=True)
-
-    # call before launching training
-    patch_yolov7_torch_loads()
-
     data_path = f"/content/Colab_CV/yolov7/{project_name}/data.yaml"
 
     

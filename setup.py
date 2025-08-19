@@ -40,8 +40,9 @@ import gradio as gr
 # ---- pipeline ----
 def run_pipeline(user_url, api_key, version, width, epochs, batch):
     try:
-        from helper import install_deps, pull_dataset, train_model, download_model
+        from helper import install_deps, pull_dataset, train_model, download_model, patch_yolov7_weights_only
         install_deps()
+        patch_yolov7_weights_only("/content/Colab_CV/yolov7")
         project_name = pull_dataset(user_url, api_key, int(version))
         train_model(int(width), int(epochs), int(batch), project_name)
         download_model()
