@@ -46,7 +46,7 @@ def run_pipeline(user_url, api_key, version, width, epochs, batch):
         project_name = pull_dataset(user_url, api_key, int(version))
         train_model(int(width), int(epochs), int(batch), project_name)
         model_path = download_model()
-        return f" Training finished for project {project_name}!"
+        return f" Training finished for project {project_name}!", model_path
         
     except Exception as e:
         return f" Error: {e}"
