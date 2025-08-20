@@ -50,8 +50,7 @@ subprocess.run(
      "-r", str(gr_requirements_path), "--constraint", str(gr_requirements_path)],
     check=True
 )
-subprocess.run([sys.executable, "-m", "pip", "install", "--no-cache-dir",
-                "google-colab"], check=True)
+
 
 # --- ensure Pillow version matches runtime ---
 def ensure_pillow(target="10.4.0"):

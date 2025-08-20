@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 from pathlib import PurePosixPath
 from scripts.dir import list_dir, find_extra_item, copy_folder_if_exists, copy_file_if_exists
-from google.colab import files
 
 script_dir = Path(__file__).resolve().parent
 
