@@ -226,6 +226,7 @@ def download_model():
     return str(model_file) if model_file.exists() else None
 
 def amb82mini_reparam():
+    import torch
     model_folder = yolov7_dir / "runs" / "train" / "yolov7-tiny-amb82" / "weights"
     copy_file_if_exists(model_folder, "best.pt" , script_dir / "scripts")
     os.chdir(script_dir / "scripts")
