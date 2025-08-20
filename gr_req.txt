@@ -11,7 +11,7 @@ ipython
 psutil
 tqdm==4.66.4
 scipy==1.11.4
-google-colab==1.0.0
+google-colab
 
 
 # Gradio frontend
