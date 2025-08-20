@@ -1,3 +1,28 @@
+
+
+import os, sys, subprocess
+def ensure_python311():
+    import platform
+    major, minor, _ = platform.python_version_tuple()
+    if major == "3" and minor != "11":
+        print("Switching runtime to Python 3.11 ...")
+
+        # Install Python 3.11 and tools
+        subprocess.run(["apt-get", "update", "-y"], check=True)
+        subprocess.run(["apt-get", "install", "-y", "python3.11", "python3.11-distutils"], check=True)
+
+        # Make python3 point to python3.11
+        subprocess.run([
+            "update-alternatives", "--install", "/usr/bin/python3", "python3", "/usr/bin/python3.11", "1"
+        ], check=True)
+        subprocess.run(["update-alternatives", "--set", "python3", "/usr/bin/python3.11"], check=True)
+
+        # Re-exec the script with Python 3.11
+        os.execv("/usr/bin/python3.11", ["python3.11"] + sys.argv)
+
+ensure_python311()
+
+
 import os, sys, subprocess
 from pathlib import Path
 
@@ -8,25 +33,10 @@ try:
     script_dir = Path(__file__).resolve().parent
 except NameError:
     script_dir = Path.cwd()
-def ensure_python310():
-    import platform
-    if platform.python_version_tuple()[0] == "3" and platform.python_version_tuple()[1] != "11":
-        print("Switching runtime to Python 3.11 ...")
+import os, sys, subprocess
 
-        # Install Python 3.10 and tools
-        subprocess.run(["apt-get", "update", "-y"], check=True)
-        subprocess.run(["apt-get", "install", "-y", "python3.11", "python3.11-distutils"], check=True)
 
-        # Make python3 point to python3.10
-        subprocess.run([
-            "update-alternatives", "--install", "/usr/bin/python3", "python3", "/usr/bin/python3.11", "1"
-        ], check=True)
-        subprocess.run(["update-alternatives", "--set", "python3", "/usr/bin/python3.11"], check=True)
 
-        # Re-exec with python3.10
-        os.execv("/usr/bin/python3.11", ["python3.11"] + sys.argv)
-
-ensure_python310()
 
 yolov7_dir = script_dir / "yolov7"
 gr_requirements_path = script_dir / "gr_req.txt"
