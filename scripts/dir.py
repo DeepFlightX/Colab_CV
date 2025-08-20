@@ -45,3 +45,23 @@ def copy_folder_if_exists(source_dir, folder_name, destination_dir):
             print(f" Error copying folder: {e}")
     else:
         print(f" Folder '{folder_name}' not found in '{source_dir}'.")
+
+import shutil
+from pathlib import Path
+
+def copy_file_if_exists(source_dir, file_name, destination_dir):
+    source_dir = Path(source_dir)
+    destination_dir = Path(destination_dir)
+    target_file_path = source_dir / file_name
+
+    if target_file_path.exists() and target_file_path.is_file():
+        dest_path = destination_dir / file_name
+        try:
+            shutil.copy(target_file_path, dest_path)
+            print(f" File '{file_name}' copied to '{destination_dir}'.")
+        except FileExistsError:
+            print(f" Destination file '{dest_path}' already exists.")
+        except Exception as e:
+            print(f" Error copying file: {e}")
+    else:
+        print(f" File '{file_name}' not found in '{source_dir}'.")

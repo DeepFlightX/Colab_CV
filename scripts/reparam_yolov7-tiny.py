@@ -13,6 +13,7 @@ argparse = argparse.ArgumentParser()
 argparse.add_argument('--weights', type=str, required=True, default='weights/best.pt', help='The weights to be reparameterized')
 argparse.add_argument('--custom_yaml', type=str, required=True, default='custom/yolov7-tiny-deploy.yaml', help='custom yaml with deploy parameters')
 argparse.add_argument('--output', type=str, required=True, default='weights/best_deploy.pt', help='The target path to save reparameterized weights')
+argparse.add_argument('--nc', type=int, required=True, default=1, help="number of classes") #added line by MV 8/17, (not in source)
 args = argparse.parse_args()
 
 device = select_device('cpu')
@@ -20,7 +21,7 @@ device = select_device('cpu')
 ckpt = torch.load(args.weights, map_location=device, weights_only=False)
 
 # reparameterized model in cfg/deploy/*.yaml
-model = Model(args.custom_yaml, ch=3, nc=1).to(device)
+model = Model(args.custom_yaml, ch=3, nc=args.nc).to(device)
 
 with open(args.custom_yaml) as f:
     yml = yaml.load(f, Loader=yaml.SafeLoader)

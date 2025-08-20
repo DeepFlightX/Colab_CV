@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 from pathlib import PurePosixPath
-from scripts.dir import list_dir, find_extra_item, copy_folder_if_exists
+from scripts.dir import list_dir, find_extra_item, copy_folder_if_exists, copy_file_if_exists
 from google.colab import files
 
 script_dir = Path(__file__).resolve().parent
@@ -225,3 +225,23 @@ def train_model(width, epochs, batch, project_name):
 def download_model():
     model_file = yolov7_dir / "runs" / "train" / "yolov7-tiny-amb82" / "weights" / "best.pt"
     return str(model_file) if model_file.exists() else None
+
+def amb82mini_reparam():
+    model_folder = yolov7_dir / "runs" / "train" / "yolov7-tiny-amb82" / "weights"
+    copy_file_if_exists(model_folder, "best.pt" , script_dir / "scripts")
+    os.chdir(script_dir / "scripts")
+    ckpt = torch.load("best.pt", map_location="cpu")
+    model = ckpt['model']
+    nc = model.nc  
+    def update_yaml_nc(yaml_path, nc):
+        lines = []
+        with open(yaml_path, "r") as f:
+            for line in f:
+                if line.strip().startswith("nc:"):
+                    lines.append(f"nc: {nc}\n")  
+                    lines.append(line)
+        with open(yaml_path, "w") as f:
+            f.writelines(lines)
+    update_yaml_nc("yolov7-tiny-deploy.yaml", nc)
+
+    subprocess.run(["python3", "reparam_yolov7-tiny.py", "--weights", "best.pt", "--custom_yaml" , "yolov7-tiny-deploy.yaml", "--output", "best_reparam.pt", "--nc", str(nc) ])
