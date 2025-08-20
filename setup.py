@@ -82,7 +82,7 @@ def run_pipeline(user_url, api_key, version, width, epochs, batch):
         return f" Training finished for project {project_name}!", model_path
         
     except Exception as e:
-        return f" Error: {e}"
+        return f" Error: {e}", None
         
 
 # ---- Gradio UI ----
