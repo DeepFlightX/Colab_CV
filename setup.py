@@ -8,6 +8,25 @@ try:
     script_dir = Path(__file__).resolve().parent
 except NameError:
     script_dir = Path.cwd()
+def ensure_python310():
+    import platform
+    if platform.python_version_tuple()[0] == "3" and platform.python_version_tuple()[1] != "10":
+        print("Switching runtime to Python 3.10 ...")
+
+        # Install Python 3.10 and tools
+        subprocess.run(["apt-get", "update", "-y"], check=True)
+        subprocess.run(["apt-get", "install", "-y", "python3.10", "python3.10-distutils"], check=True)
+
+        # Make python3 point to python3.10
+        subprocess.run([
+            "update-alternatives", "--install", "/usr/bin/python3", "python3", "/usr/bin/python3.10", "1"
+        ], check=True)
+        subprocess.run(["update-alternatives", "--set", "python3", "/usr/bin/python3.10"], check=True)
+
+        # Re-exec with python3.10
+        os.execv("/usr/bin/python3.10", ["python3.10"] + sys.argv)
+
+ensure_python310()
 
 yolov7_dir = script_dir / "yolov7"
 gr_requirements_path = script_dir / "gr_req.txt"
