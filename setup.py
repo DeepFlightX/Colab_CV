@@ -21,6 +21,9 @@ def ensure_python311():
         os.execv("/usr/bin/python3.11", ["python3.11"] + sys.argv)
 
 ensure_python311()
+# Install pip for Python 3.11
+subprocess.run(["curl", "-sS", "https://bootstrap.pypa.io/get-pip.py", "-o", "get-pip.py"], check=True)
+subprocess.run(["/usr/bin/python3.11", "get-pip.py"], check=True)
 
 
 import os, sys, subprocess
