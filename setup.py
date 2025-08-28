@@ -1,6 +1,11 @@
 
 
 import os, sys, subprocess
+
+script_dir = Path(__file__).resolve().parent
+
+yolov7_dir = script_dir / "yolov7"
+
 def ensure_python311():
     import platform
     major, minor, _ = platform.python_version_tuple()
@@ -79,6 +84,7 @@ def run_pipeline(user_url, api_key, version, width, epochs, batch):
         project_name = pull_dataset(user_url, api_key, int(version))
         train_model(int(width), int(epochs), int(batch), project_name)
         model_path = download_model()
+        os.chdir(yolov7_dir/"scripts")
         amb82mini_reparam()
         return f" Training finished for project {project_name}!", model_path
         
