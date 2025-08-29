@@ -2,6 +2,8 @@
 
 
 # import
+import sys, os 
+sys.path.append(os.path.dirname(__file__)) #This way we are in the working directory with models and utils
 from copy import deepcopy
 from models.yolo import Model
 import torch
@@ -14,6 +16,7 @@ argparse.add_argument('--weights', type=str, required=True, default='weights/bes
 argparse.add_argument('--custom_yaml', type=str, required=True, default='custom/yolov7-tiny-deploy.yaml', help='custom yaml with deploy parameters')
 argparse.add_argument('--output', type=str, required=True, default='weights/best_deploy.pt', help='The target path to save reparameterized weights')
 argparse.add_argument('--nc', type=int, required=True, default=1, help="number of classes") #added line by MV 8/17, (not in source)
+
 args = argparse.parse_args()
 
 device = select_device('cpu')
